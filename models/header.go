@@ -5,5 +5,8 @@ import (
 )
 
 func TampilkanHeader() {
-	fmt.Println("=== SIKAS (Aplikasi Informasi Kas Mahasiswa) ===")
+	fmt.Println("============================================")
+	fmt.Println("             	S I K A S                    ")
+	fmt.Println("     Aplikasi Informasi Kas Mahasiswa       ")
+	fmt.Println("============================================")
 }
