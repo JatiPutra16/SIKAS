@@ -2,18 +2,20 @@ package main
 
 import (
 	"fmt"
+	"sikas/function"
 	"sikas/models"
 )
 
-func clearScreen() {
-	fmt.Print("\033[H\033[2J")
-}
+const NMAX = 1000
+
+var daftarMhs [NMAX]models.Mahasiswa
+var jumlahMhs int
 
 func main() {
 	var pilihan int
 
 	for {
-		clearScreen()
+		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("[1] Manajemen Data Mahasiswa")
 		fmt.Println("[2] Pencatatan Iuran Mahasiswa")
@@ -21,7 +23,7 @@ func main() {
 		fmt.Println("[4] Daftar Mahasiswa & Status Iuran")
 		fmt.Println("[5] Laporan Rekapitulasi & Statistik")
 		fmt.Println("[6] Keluar")
-		fmt.Println("============================================\n")
+		fmt.Println("============================================")
 
 		fmt.Print("Masukkan Pilihan: ")
 		fmt.Scanln(&pilihan)
@@ -29,21 +31,18 @@ func main() {
 
 		switch pilihan {
 		case 1:
-
+			function.MenuMahasiswa(&daftarMhs, &jumlahMhs, NMAX)
 		case 2:
-
 		case 3:
-
 		case 4:
-
 		case 5:
-
 		case 6:
 			fmt.Println("Terima kasih telah menggunakan SIKAS!")
 			return
+		default:
+			fmt.Println("\nPilihan tidak valid.")
 		}
 
-		models.TampilkanFooter()
 		fmt.Print("\nTekan Enter untuk kembali ke menu...")
 		fmt.Scanln()
 	}
