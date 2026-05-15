@@ -6,9 +6,7 @@ import (
 	"sikas/models"
 )
 
-const NMAX = 1000
-
-var daftarMhs [NMAX]models.Mahasiswa
+var daftarMhs [models.NMAX]models.Mahasiswa
 var jumlahMhs int
 
 func main() {
@@ -31,8 +29,9 @@ func main() {
 
 		switch pilihan {
 		case 1:
-			function.MenuMahasiswa(&daftarMhs, &jumlahMhs, NMAX)
+			function.MenuMahasiswa(&daftarMhs, &jumlahMhs, models.NMAX)
 		case 2:
+			function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs, models.NMAX)
 		case 3:
 		case 4:
 		case 5:
@@ -40,7 +39,7 @@ func main() {
 			fmt.Println("Terima kasih telah menggunakan SIKAS!")
 			return
 		default:
-			fmt.Println("\nPilihan tidak valid.")
+			fmt.Println("Pilihan tidak valid.")
 		}
 
 		fmt.Print("\nTekan Enter untuk kembali ke menu...")
