@@ -33,7 +33,9 @@ func main() {
 		case 2:
 			function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs, models.NMAX)
 		case 3:
+			function.MenuCariMahasiswaBelumBayar(&daftarMhs, &jumlahMhs)
 		case 4:
+			function.MenuDaftarMahasiswa(&daftarMhs, &jumlahMhs)
 		case 5:
 		case 6:
 			fmt.Println("Terima kasih telah menggunakan SIKAS!")
