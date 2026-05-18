@@ -31,7 +31,7 @@ func main() {
 		case 1:
 			function.MenuMahasiswa(&daftarMhs, &jumlahMhs, models.NMAX)
 		case 2:
-			function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs, models.NMAX)
+			function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs)
 		case 3:
 			function.MenuCariMahasiswaBelumBayar(&daftarMhs, &jumlahMhs)
 		case 4:

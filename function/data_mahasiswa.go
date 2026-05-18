@@ -7,7 +7,6 @@ import (
 
 func MenuMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, maxData int) {
 	var subPilih int
-	var cariNIM, hapusNIM string
 
 	for {
 		models.Clearscreen()
@@ -28,84 +27,110 @@ func MenuMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, max
 
 		switch subPilih {
 		case 1:
-			fmt.Println("--------------------------------------------")
-			if *jumlahMhs < maxData {
-				fmt.Print("Masukkan NIM  : ")
-				fmt.Scanln(&daftarMhs[*jumlahMhs].NIM)
-				fmt.Print("Masukkan Nama Lengkap : ")
-				fmt.Scanln(&daftarMhs[*jumlahMhs].Nama)
-				fmt.Print("Masukkan Nomor HP : ")
-				fmt.Scanln(&daftarMhs[*jumlahMhs].NoHP)
-				*jumlahMhs++
-				fmt.Println("--------------------------------------------")
-				fmt.Println("\nData mahasiswa berhasil ditambahkan.")
-			} else {
-				fmt.Println("\nKapasitas penyimpanan sudah penuh!")
-			}
+			createMahasiswa(daftarMhs, jumlahMhs, maxData)
+
 		case 2:
-			fmt.Print("Masukkan NIM yang akan diubah: ")
-			fmt.Scanln(&cariNIM)
-			idx := -1
+			updateMahasiswa(daftarMhs, jumlahMhs)
 
-			for i := 0; i < *jumlahMhs; i++ {
-				if daftarMhs[i].NIM == cariNIM {
-					idx = i
-				}
-			}
-
-			if idx != -1 {
-				fmt.Println("--------------------------------------------")
-				fmt.Print("[Update] Masukkan Nama Lengkap : ")
-				fmt.Scanln(&daftarMhs[idx].Nama)
-				fmt.Print("[Update] Masukkan Nomor HP   : ")
-				fmt.Scanln(&daftarMhs[idx].NoHP)
-				fmt.Println("--------------------------------------------")
-				fmt.Println("\nData berhasil diperbaharui.")
-			} else {
-				fmt.Println("\nNIM tidak ditemukan.")
-			}
 		case 3:
-			fmt.Print("Masukkan NIM yang akan dihapus: ")
-			fmt.Scanln(&hapusNIM)
-			idx := -1
-
-			for i := 0; i < *jumlahMhs; i++ {
-				if daftarMhs[i].NIM == hapusNIM {
-					idx = i
-				}
-			}
-
-			if idx != -1 {
-				fmt.Println("--------------------------------------------")
-				for i := idx; i < *jumlahMhs-1; i++ {
-					daftarMhs[i] = daftarMhs[i+1]
-				}
-				*jumlahMhs--
-				fmt.Printf("\nData mahasiswa dengan NIM %s berhasil dihapus.", hapusNIM)
-			} else {
-				fmt.Println("\nNIM tidak ditemukan.")
-			}
+			deleteMahasiswa(daftarMhs, jumlahMhs)
 
 		case 4:
-			fmt.Println("--------------------------------------------")
-			fmt.Println("DAFTAR MAHASISWA:")
+			readMahasiswa(daftarMhs, jumlahMhs)
 
-			if *jumlahMhs == 0 {
-				fmt.Println("(Data Masih Kosong!)")
-			} else {
-				fmt.Println("+----+-----------------+---------------------------+-----------------+")
-				fmt.Printf("| %-2s | %-15s | %-25s | %-15s |\n", "No", "NIM", "Nama Lengkap", "No HP")
-				fmt.Println("+----+-----------------+---------------------------+-----------------+")
-				for i := 0; i < *jumlahMhs; i++ {
-					fmt.Printf("| %-2d | %-15s | %-25s | %-15s |\n", i+1, daftarMhs[i].NIM, daftarMhs[i].Nama, daftarMhs[i].NoHP)
-				}
-				fmt.Println("+----+-----------------+---------------------------+-----------------+")
-			}
 		default:
 			fmt.Println("\nPilihan tidak valid.")
 		}
 
 		fmt.Print("\nTekan Enter untuk melanjutkan...")
 		fmt.Scanln()
+	}
+}
+
+func readMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+	fmt.Println("--------------------------------------------")
+	fmt.Println("DAFTAR MAHASISWA:")
+
+	if *jumlahMhs == 0 {
+		fmt.Println("(Data Masih Kosong!)")
+	} else {
+		fmt.Println("+----+-----------------+---------------------------+-----------------+")
+		fmt.Printf("| %-2s | %-15s | %-25s | %-15s |\n", "No", "NIM", "Nama Lengkap", "No HP")
+		fmt.Println("+----+-----------------+---------------------------+-----------------+")
+		for i := 0; i < *jumlahMhs; i++ {
+			fmt.Printf("| %-2d | %-15s | %-25s | %-15s |\n", i+1, daftarMhs[i].NIM, daftarMhs[i].Nama, daftarMhs[i].NoHP)
+		}
+		fmt.Println("+----+-----------------+---------------------------+-----------------+")
+	}
+}
+
+func createMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, maxData int) {
+	fmt.Println("--------------------------------------------")
+	if *jumlahMhs < maxData {
+		fmt.Print("Masukkan NIM  : ")
+		fmt.Scanln(&daftarMhs[*jumlahMhs].NIM)
+		fmt.Print("Masukkan Nama Lengkap : ")
+		fmt.Scanln(&daftarMhs[*jumlahMhs].Nama)
+		fmt.Print("Masukkan Nomor HP : ")
+		fmt.Scanln(&daftarMhs[*jumlahMhs].NoHP)
+		*jumlahMhs++
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\nData mahasiswa berhasil ditambahkan.")
+	} else {
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\nKapasitas penyimpanan sudah penuh!")
+	}
+}
+
+func updateMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+	var cariNIM string
+
+	fmt.Print("Masukkan NIM yang akan diubah: ")
+	fmt.Scanln(&cariNIM)
+	idx := -1
+
+	for i := 0; i < *jumlahMhs; i++ {
+		if daftarMhs[i].NIM == cariNIM {
+			idx = i
+		}
+	}
+
+	if idx != -1 {
+		fmt.Println("--------------------------------------------")
+		fmt.Print("[Update] Masukkan Nama Lengkap : ")
+		fmt.Scanln(&daftarMhs[idx].Nama)
+		fmt.Print("[Update] Masukkan Nomor HP   : ")
+		fmt.Scanln(&daftarMhs[idx].NoHP)
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\nData berhasil diperbaharui.")
+	} else {
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\nNIM tidak ditemukan.")
+	}
+}
+
+func deleteMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+	var hapusNIM string
+
+	fmt.Print("Masukkan NIM yang akan dihapus: ")
+	fmt.Scanln(&hapusNIM)
+	idx := -1
+
+	for i := 0; i < *jumlahMhs; i++ {
+		if daftarMhs[i].NIM == hapusNIM {
+			idx = i
+		}
+	}
+
+	if idx != -1 {
+		fmt.Println("--------------------------------------------")
+		for i := idx; i < *jumlahMhs-1; i++ {
+			daftarMhs[i] = daftarMhs[i+1]
+		}
+		*jumlahMhs--
+		fmt.Printf("\nData mahasiswa dengan NIM %s berhasil dihapus.", hapusNIM)
+	} else {
+		fmt.Println("--------------------------------------------")
+		fmt.Println("\nNIM tidak ditemukan.")
 	}
 }
