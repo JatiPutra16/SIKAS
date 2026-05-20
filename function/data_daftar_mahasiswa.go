@@ -3,7 +3,6 @@ package function
 import (
 	"fmt"
 	"sikas/models"
-	"strings"
 )
 
 func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
@@ -59,7 +58,7 @@ func selectionSortNamaAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 		minIdx := i
 
 		for j := i + 1; j < *jumlahMhs; j++ {
-			if strings.ToLower(sorted[j].Nama) < strings.ToLower(sorted[minIdx].Nama) {
+			if sorted[j].Nama < sorted[minIdx].Nama {
 				minIdx = j
 			}
 		}
@@ -113,10 +112,15 @@ func insertionSortNamaDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 	for i := 1; i < *jumlahMhs; i++ {
 		kunci := sorted[i]
 		j := i - 1
+		lanjutGeser := true
 
-		for j >= 0 && strings.ToLower(sorted[j].Nama) < strings.ToLower(kunci.Nama) {
-			sorted[j+1] = sorted[j]
-			j--
+		for j >= 0 && lanjutGeser {
+			if sorted[j].Nama < kunci.Nama {
+				sorted[j+1] = sorted[j]
+				j--
+			} else {
+				lanjutGeser = false
+			}
 		}
 
 		sorted[j+1] = kunci
@@ -167,19 +171,19 @@ func selectionSortTunggakanAscending(daftarMhs *[models.NMAX]models.Mahasiswa, j
 
 	for i := 0; i < *jumlahMhs-1; i++ {
 		minIdx := i
-		totalMin := 0
-
-		for k := 0; k < 12; k++ {
-			if !sorted[minIdx].Iuran[k].Status {
-				sisa := models.TARGET_IURAN - sorted[minIdx].Iuran[k].TotalTerbayar
-				if sisa > 0 {
-					totalMin += sisa
-				}
-			}
-		}
 
 		for j := i + 1; j < *jumlahMhs; j++ {
+			totalMin := 0
 			totalJ := 0
+
+			for k := 0; k < 12; k++ {
+				if !sorted[minIdx].Iuran[k].Status {
+					sisa := models.TARGET_IURAN - sorted[minIdx].Iuran[k].TotalTerbayar
+					if sisa > 0 {
+						totalMin += sisa
+					}
+				}
+			}
 
 			for k := 0; k < 12; k++ {
 				if !sorted[j].Iuran[k].Status {
@@ -192,7 +196,6 @@ func selectionSortTunggakanAscending(daftarMhs *[models.NMAX]models.Mahasiswa, j
 
 			if totalJ < totalMin {
 				minIdx = j
-				totalMin = totalJ
 			}
 		}
 
@@ -245,19 +248,20 @@ func insertionSortTunggakanDescending(daftarMhs *[models.NMAX]models.Mahasiswa, 
 	for i := 1; i < *jumlahMhs; i++ {
 		kunci := sorted[i]
 		j := i - 1
+		lanjutGeser := true
 
-		totalKunci := 0
-		for k := 0; k < 12; k++ {
-			if !kunci.Iuran[k].Status {
-				sisa := models.TARGET_IURAN - kunci.Iuran[k].TotalTerbayar
-				if sisa > 0 {
-					totalKunci += sisa
+		for j >= 0 && lanjutGeser {
+			totalKunci := 0
+			totalJ := 0
+
+			for k := 0; k < 12; k++ {
+				if !kunci.Iuran[k].Status {
+					sisa := models.TARGET_IURAN - kunci.Iuran[k].TotalTerbayar
+					if sisa > 0 {
+						totalKunci += sisa
+					}
 				}
 			}
-		}
-
-		for j >= 0 {
-			totalJ := 0
 
 			for k := 0; k < 12; k++ {
 				if !sorted[j].Iuran[k].Status {
@@ -268,12 +272,12 @@ func insertionSortTunggakanDescending(daftarMhs *[models.NMAX]models.Mahasiswa, 
 				}
 			}
 
-			if totalJ >= totalKunci {
-				break
+			if totalJ < totalKunci {
+				sorted[j+1] = sorted[j]
+				j--
+			} else {
+				lanjutGeser = false
 			}
-
-			sorted[j+1] = sorted[j]
-			j--
 		}
 
 		sorted[j+1] = kunci
