@@ -11,8 +11,9 @@ var jumlahMhs int
 
 func main() {
 	var pilihan int
+	var keluar bool
 
-	for {
+	for !keluar {
 		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("[1] Manajemen Data Mahasiswa")
@@ -27,24 +28,27 @@ func main() {
 		fmt.Scanln(&pilihan)
 		fmt.Println()
 
-		switch pilihan {
-		case 1:
-			function.MenuMahasiswa(&daftarMhs, &jumlahMhs, models.NMAX)
-		case 2:
-			function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs)
-		case 3:
-			function.MenuCariMahasiswaBelumBayar(&daftarMhs, &jumlahMhs)
-		case 4:
-			function.MenuDaftarMahasiswa(&daftarMhs, &jumlahMhs)
-		case 5:
-		case 6:
+		if pilihan == 6 {
 			fmt.Println("Terima kasih telah menggunakan SIKAS!")
-			return
-		default:
-			fmt.Println("Pilihan tidak valid.")
-		}
+			keluar = true
+		} else {
+			switch pilihan {
+			case 1:
+				function.MenuMahasiswa(&daftarMhs, &jumlahMhs, models.NMAX)
+			case 2:
+				function.MenuPencatatanIuran(&daftarMhs, &jumlahMhs)
+			case 3:
+				function.MenuCariMahasiswaBelumBayar(&daftarMhs, &jumlahMhs)
+			case 4:
+				function.MenuDaftarMahasiswa(&daftarMhs, &jumlahMhs)
+			case 5:
 
-		fmt.Print("\nTekan Enter untuk kembali ke menu...")
-		fmt.Scanln()
+			default:
+				fmt.Println("Pilihan tidak valid.")
+			}
+
+			fmt.Print("\nTekan Enter untuk kembali ke menu...")
+			fmt.Scanln()
+		}
 	}
 }

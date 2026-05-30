@@ -7,6 +7,7 @@ import (
 
 func MenuCariMahasiswaBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var subPilih int
+	var keluar bool
 	var namaBulan [12]string
 
 	namaBulan = [12]string{
@@ -15,7 +16,7 @@ func MenuCariMahasiswaBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 		"September", "Oktober", "November", "Desember",
 	}
 
-	for {
+	for !keluar {
 		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("----- CARI MAHASISWA BELUM BAYAR -----")
@@ -27,22 +28,20 @@ func MenuCariMahasiswaBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 		fmt.Scanln(&subPilih)
 
 		if subPilih == 3 {
-			break
+			keluar = true
+		} else {
+			switch subPilih {
+			case 1:
+				sequentialSearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
+			case 2:
+				binarySearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
+			default:
+				fmt.Println("\nPilihan tidak valid.")
+			}
+
+			fmt.Print("\nTekan Enter untuk melanjutkan...")
+			fmt.Scanln()
 		}
-
-		switch subPilih {
-		case 1:
-			sequentialSearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
-
-		case 2:
-			binarySearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
-
-		default:
-			fmt.Println("\nPilihan tidak valid.")
-		}
-
-		fmt.Print("\nTekan Enter untuk melanjutkan...")
-		fmt.Scanln()
 	}
 }
 

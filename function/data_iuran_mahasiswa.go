@@ -7,8 +7,9 @@ import (
 
 func MenuPencatatanIuran(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var subPilih int
+	var keluar bool
 
-	for {
+	for !keluar {
 		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("-------- PENCATATAN IURAN MAHASISWA --------")
@@ -20,35 +21,38 @@ func MenuPencatatanIuran(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *in
 		fmt.Scanln(&subPilih)
 
 		if subPilih == 3 {
-			break
+			keluar = true
+		} else {
+			switch subPilih {
+			case 1:
+				createIuranMahasiswa(daftarMhs, jumlahMhs)
+
+			case 2:
+				readIuranMahasiswa(daftarMhs, jumlahMhs)
+
+			default:
+				fmt.Println("\nPilihan tidak valid.")
+			}
+
+			fmt.Print("\nTekan Enter untuk melanjutkan...")
+			fmt.Scanln()
 		}
-
-		switch subPilih {
-		case 1:
-			createIuranMahasiswa(daftarMhs, jumlahMhs)
-
-		case 2:
-			readIuranMahasiswa(daftarMhs, jumlahMhs)
-
-		default:
-			fmt.Println("\nPilihan tidak valid.")
-		}
-
-		fmt.Print("\nTekan Enter untuk melanjutkan...")
-		fmt.Scanln()
 	}
 }
 
 func readIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var nimCari string
 	var namaBulan [12]string
+	var idx, i, j int
+	var statusP string
 
 	namaBulan = [12]string{"Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"}
 
 	fmt.Print("Masukkan NIM Mahasiswa: ")
 	fmt.Scanln(&nimCari)
-	idx := -1
-	for i := 0; i < *jumlahMhs; i++ {
+	idx = -1
+
+	for i = 0; i < *jumlahMhs; i++ {
 		if daftarMhs[i].NIM == nimCari {
 			idx = i
 		}
@@ -63,8 +67,8 @@ func readIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int
 		fmt.Printf("%-12s | %-15s | %-15s | %-20s\n", "Bulan", "Total Bayar", "Status", "Riwayat (Nominal/Tgl)")
 		fmt.Println("-------------------------------------------------------------------------------")
 
-		for i := 0; i < 12; i++ {
-			statusP := "Belum Lunas"
+		for i = 0; i < 12; i++ {
+			statusP = "Belum Lunas"
 			if daftarMhs[idx].Iuran[i].Status {
 				statusP = "Lunas"
 			}
@@ -72,7 +76,7 @@ func readIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int
 			fmt.Printf("%-12s | Rp %-12d | %-15s | ", namaBulan[i], daftarMhs[idx].Iuran[i].TotalTerbayar, statusP)
 
 			if daftarMhs[idx].Iuran[i].JumlahRiwayat > 0 {
-				for j := 0; j < daftarMhs[idx].Iuran[i].JumlahRiwayat; j++ {
+				for j = 0; j < daftarMhs[idx].Iuran[i].JumlahRiwayat; j++ {
 					if j > 0 {
 						fmt.Print(", ")
 					}
@@ -92,13 +96,14 @@ func readIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int
 
 func createIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var nimCari, tanggal string
-	var bulan, nominal int
+	var bulan, nominal, idx, i, bulanIdx int
+	var transaksiBaru models.Transaksi
 
 	fmt.Print("Masukkan NIM Mahasiswa: ")
 	fmt.Scanln(&nimCari)
-	idx := -1
+	idx = -1
 
-	for i := 0; i < *jumlahMhs; i++ {
+	for i = 0; i < *jumlahMhs; i++ {
 		if daftarMhs[i].NIM == nimCari {
 			idx = i
 		}
@@ -119,11 +124,11 @@ func createIuranMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *i
 			fmt.Scanln(&tanggal)
 			fmt.Println("--------------------------------------------")
 
-			bulanIdx := bulan - 1
+			bulanIdx = bulan - 1
 			daftarMhs[idx].Iuran[bulanIdx].TotalTerbayar += nominal
 			daftarMhs[idx].Iuran[bulanIdx].Status = daftarMhs[idx].Iuran[bulanIdx].TotalTerbayar >= models.TARGET_IURAN
 
-			transaksiBaru := models.Transaksi{
+			transaksiBaru = models.Transaksi{
 				Nominal: nominal,
 				Tanggal: tanggal,
 			}

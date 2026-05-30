@@ -7,8 +7,9 @@ import (
 
 func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var subPilih int
+	var keluar bool
 
-	for {
+	for !keluar {
 		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("----- DAFTAR MAHASISWA & STATUS IURAN -----")
@@ -22,28 +23,28 @@ func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *in
 		fmt.Scanln(&subPilih)
 
 		if subPilih == 5 {
-			break
+			keluar = true
+		} else {
+			switch subPilih {
+			case 1:
+				selectionSortNamaAscending(daftarMhs, jumlahMhs)
+
+			case 2:
+				insertionSortNamaDescending(daftarMhs, jumlahMhs)
+
+			case 3:
+				selectionSortTunggakanAscending(daftarMhs, jumlahMhs)
+
+			case 4:
+				insertionSortTunggakanDescending(daftarMhs, jumlahMhs)
+
+			default:
+				fmt.Println("\nPilihan tidak valid.")
+			}
+
+			fmt.Print("\nTekan Enter untuk melanjutkan...")
+			fmt.Scanln()
 		}
-
-		switch subPilih {
-		case 1:
-			selectionSortNamaAscending(daftarMhs, jumlahMhs)
-
-		case 2:
-			insertionSortNamaDescending(daftarMhs, jumlahMhs)
-
-		case 3:
-			selectionSortTunggakanAscending(daftarMhs, jumlahMhs)
-
-		case 4:
-			insertionSortTunggakanDescending(daftarMhs, jumlahMhs)
-
-		default:
-			fmt.Println("\nPilihan tidak valid.")
-		}
-
-		fmt.Print("\nTekan Enter untuk melanjutkan...")
-		fmt.Scanln()
 	}
 }
 
