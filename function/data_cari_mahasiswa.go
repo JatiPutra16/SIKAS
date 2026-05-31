@@ -33,8 +33,10 @@ func MenuCariMahasiswaBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 			switch subPilih {
 			case 1:
 				sequentialSearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
+
 			case 2:
 				binarySearchBelumBayar(daftarMhs, jumlahMhs, namaBulan)
+
 			default:
 				fmt.Println("\nPilihan tidak valid.")
 			}
@@ -48,6 +50,10 @@ func MenuCariMahasiswaBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, namaBulan [12]string) {
 	var keyword string
 	var idx int
+	var i int
+	var sudahLunas bool
+	var totalTunggakan int
+	var sisa int
 
 	idx = -1
 
@@ -62,7 +68,7 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 		}
 	}
 
-	for i := 0; i < *jumlahMhs; i++ {
+	for i = 0; i < *jumlahMhs; i++ {
 		if daftarMhs[i].Nama == keyword {
 			idx = i
 		}
@@ -76,14 +82,14 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 		fmt.Println("NIM          :", daftarMhs[idx].NIM)
 		fmt.Println("Nama Lengkap :", daftarMhs[idx].Nama)
 
-		sudahLunas := true
-		totalTunggakan := 0
+		sudahLunas = true
+		totalTunggakan = 0
 
-		for i := 0; i < 12; i++ {
+		for i = 0; i < 12; i++ {
 			if !daftarMhs[idx].Iuran[i].Status {
 				sudahLunas = false
 
-				sisa := models.TARGET_IURAN - daftarMhs[idx].Iuran[i].TotalTerbayar
+				sisa = models.TARGET_IURAN - daftarMhs[idx].Iuran[i].TotalTerbayar
 				if sisa > 0 {
 					totalTunggakan += sisa
 				}
@@ -98,9 +104,9 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 			fmt.Println("------------------------------------------------------------")
 			fmt.Println("Detail bulan belum lunas:")
 
-			for i := 0; i < 12; i++ {
+			for i = 0; i < 12; i++ {
 				if !daftarMhs[idx].Iuran[i].Status {
-					sisa := models.TARGET_IURAN - daftarMhs[idx].Iuran[i].TotalTerbayar
+					sisa = models.TARGET_IURAN - daftarMhs[idx].Iuran[i].TotalTerbayar
 
 					if sisa < 0 {
 						sisa = 0
@@ -122,6 +128,16 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, namaBulan [12]string) {
 	var nimCari string
 	var sorted [models.NMAX]models.Mahasiswa
+	var i int
+	var j int
+	var minIdx int
+	var kiri int
+	var kanan int
+	var tengah int
+	var hasil int
+	var sudahLunas bool
+	var totalTunggakan int
+	var sisa int
 
 	fmt.Println("\n--- Binary Search berdasarkan NIM ---")
 
@@ -134,14 +150,14 @@ func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs 
 		}
 	}
 
-	for i := 0; i < *jumlahMhs; i++ {
+	for i = 0; i < *jumlahMhs; i++ {
 		sorted[i] = daftarMhs[i]
 	}
 
-	for i := 0; i < *jumlahMhs-1; i++ {
-		minIdx := i
+	for i = 0; i < *jumlahMhs-1; i++ {
+		minIdx = i
 
-		for j := i + 1; j < *jumlahMhs; j++ {
+		for j = i + 1; j < *jumlahMhs; j++ {
 			if sorted[j].NIM < sorted[minIdx].NIM {
 				minIdx = j
 			}
@@ -150,12 +166,12 @@ func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs 
 		sorted[i], sorted[minIdx] = sorted[minIdx], sorted[i]
 	}
 
-	kiri := 0
-	kanan := *jumlahMhs - 1
-	hasil := -1
+	kiri = 0
+	kanan = *jumlahMhs - 1
+	hasil = -1
 
 	for kiri <= kanan && hasil == -1 {
-		tengah := (kiri + kanan) / 2
+		tengah = (kiri + kanan) / 2
 
 		if sorted[tengah].NIM == nimCari {
 			hasil = tengah
@@ -174,14 +190,14 @@ func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs 
 		fmt.Println("NIM          :", sorted[hasil].NIM)
 		fmt.Println("Nama Lengkap :", sorted[hasil].Nama)
 
-		sudahLunas := true
-		totalTunggakan := 0
+		sudahLunas = true
+		totalTunggakan = 0
 
-		for i := 0; i < 12; i++ {
+		for i = 0; i < 12; i++ {
 			if !sorted[hasil].Iuran[i].Status {
 				sudahLunas = false
 
-				sisa := models.TARGET_IURAN - sorted[hasil].Iuran[i].TotalTerbayar
+				sisa = models.TARGET_IURAN - sorted[hasil].Iuran[i].TotalTerbayar
 				if sisa > 0 {
 					totalTunggakan += sisa
 				}
@@ -196,9 +212,9 @@ func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs 
 			fmt.Println("------------------------------------------------------------")
 			fmt.Println("Detail bulan belum lunas:")
 
-			for i := 0; i < 12; i++ {
+			for i = 0; i < 12; i++ {
 				if !sorted[hasil].Iuran[i].Status {
-					sisa := models.TARGET_IURAN - sorted[hasil].Iuran[i].TotalTerbayar
+					sisa = models.TARGET_IURAN - sorted[hasil].Iuran[i].TotalTerbayar
 
 					if sisa < 0 {
 						sisa = 0

@@ -42,6 +42,7 @@ func main() {
 			case 4:
 				function.MenuDaftarMahasiswa(&daftarMhs, &jumlahMhs)
 			case 5:
+				function.MenuStatistikMahasiswa(&daftarMhs, &jumlahMhs)
 
 			default:
 				fmt.Println("Pilihan tidak valid.")
