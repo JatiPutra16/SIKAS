@@ -68,10 +68,28 @@ func readMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 }
 
 func createMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, maxData int) {
+	var newNIM string
+	var exists bool
+	var i int
+
 	fmt.Println("--------------------------------------------")
 	if *jumlahMhs < maxData {
-		fmt.Print("Masukkan NIM  : ")
-		fmt.Scanln(&daftarMhs[*jumlahMhs].NIM)
+		fmt.Print("Masukkan NIM		: ")
+		fmt.Scanln(&newNIM)
+
+		exists = false
+		for i = 0; i < *jumlahMhs && !exists; i++ {
+			if daftarMhs[i].NIM == newNIM {
+				exists = true
+			}
+		}
+
+		if exists {
+			fmt.Println("\nError: Mahasiswa dengan NIM tersebut sudah terdaftar!")
+			return
+		}
+
+		daftarMhs[*jumlahMhs].NIM = newNIM
 		fmt.Print("Masukkan Nama Lengkap : ")
 		fmt.Scanln(&daftarMhs[*jumlahMhs].Nama)
 		fmt.Print("Masukkan Nomor HP : ")
