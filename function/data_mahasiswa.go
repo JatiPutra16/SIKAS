@@ -74,7 +74,7 @@ func createMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, m
 
 	fmt.Println("--------------------------------------------")
 	if *jumlahMhs < maxData {
-		fmt.Print("Masukkan NIM		: ")
+		fmt.Print("Masukkan NIM : ")
 		fmt.Scanln(&newNIM)
 
 		exists = false
@@ -86,17 +86,16 @@ func createMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, m
 
 		if exists {
 			fmt.Println("\nError: Mahasiswa dengan NIM tersebut sudah terdaftar!")
-			return
+		} else {
+			daftarMhs[*jumlahMhs].NIM = newNIM
+			fmt.Print("Masukkan Nama Lengkap : ")
+			fmt.Scanln(&daftarMhs[*jumlahMhs].Nama)
+			fmt.Print("Masukkan Nomor HP : ")
+			fmt.Scanln(&daftarMhs[*jumlahMhs].NoHP)
+			*jumlahMhs++
+			fmt.Println("--------------------------------------------")
+			fmt.Println("\nData mahasiswa berhasil ditambahkan.")
 		}
-
-		daftarMhs[*jumlahMhs].NIM = newNIM
-		fmt.Print("Masukkan Nama Lengkap : ")
-		fmt.Scanln(&daftarMhs[*jumlahMhs].Nama)
-		fmt.Print("Masukkan Nomor HP : ")
-		fmt.Scanln(&daftarMhs[*jumlahMhs].NoHP)
-		*jumlahMhs++
-		fmt.Println("--------------------------------------------")
-		fmt.Println("\nData mahasiswa berhasil ditambahkan.")
 	} else {
 		fmt.Println("--------------------------------------------")
 		fmt.Println("\nKapasitas penyimpanan sudah penuh!")
