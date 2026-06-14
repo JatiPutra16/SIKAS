@@ -68,7 +68,7 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 		}
 	}
 
-	for i = 0; i < *jumlahMhs; i++ {
+	for i = 0; i < *jumlahMhs && idx == -1; i++ {
 		if daftarMhs[i].Nama == keyword {
 			idx = i
 		}
