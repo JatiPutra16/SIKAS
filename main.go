@@ -13,6 +13,7 @@ func main() {
 	var pilihan int
 	var keluar bool
 
+	models.InisialisasiDummyData(&daftarMhs, &jumlahMhs)
 	for !keluar {
 		models.Clearscreen()
 		models.TampilkanHeader()

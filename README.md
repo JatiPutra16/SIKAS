@@ -54,21 +54,16 @@ SIKAS/
 │
 ├── main.go
 ├── models/
-│   ├── mahasiswa.go
-│   └── transaksi.go
-│
-├── services/
-│   ├── crud.go
-│   ├── search.go
-│   ├── sorting.go
-│   └── statistik.go
-│
-├── utils/
-│   └── helper.go
-│
-├── data/
-│   └── mahasiswa.json
-│
+│   └── cls.go
+|   └── config.go
+|   └── header.go
+|   └── dummyData.go
+├── function/
+│   ├── data_cari_mahasiswa.go
+│   ├── data_daftar_iuran_mahasiswa.go
+│   ├── data_iuran_mahasiswa.go
+│   └── data_mahasiswa.go
+│   └── data_statistik_mahasiswa.go
 └── README.md
 ```
 
