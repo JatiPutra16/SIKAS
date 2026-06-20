@@ -13,10 +13,10 @@ func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *in
 		models.Clearscreen()
 		models.TampilkanHeader()
 		fmt.Println("----- DAFTAR MAHASISWA & STATUS IURAN -----")
-		fmt.Println("[1] Nama Ascending  (Selection Sort)")
-		fmt.Println("[2] Nama Descending (Insertion Sort)")
-		fmt.Println("[3] Tunggakan Ascending  (Selection Sort)")
-		fmt.Println("[4] Tunggakan Descending (Insertion Sort)")
+		fmt.Println("[1] Nama Ascending  (Insertion Sort)")
+		fmt.Println("[2] Nama Descending (Selection Sort)")
+		fmt.Println("[3] Tunggakan Ascending  (Insertion Sort)")
+		fmt.Println("[4] Tunggakan Descending (Selection Sort)")
 		fmt.Println("[5] Kembali ke Menu Utama")
 		fmt.Println("============================================")
 		fmt.Print("Pilihan: ")
@@ -27,16 +27,16 @@ func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *in
 		} else {
 			switch subPilih {
 			case 1:
-				selectionSortNamaAscending(daftarMhs, jumlahMhs)
+				insertionSortNamaAscending(daftarMhs, jumlahMhs)
 
 			case 2:
-				insertionSortNamaDescending(daftarMhs, jumlahMhs)
+				selectionSortNamaDescending(daftarMhs, jumlahMhs)
 
 			case 3:
-				selectionSortTunggakanAscending(daftarMhs, jumlahMhs)
+				insertionSortTunggakanAscending(daftarMhs, jumlahMhs)
 
 			case 4:
-				insertionSortTunggakanDescending(daftarMhs, jumlahMhs)
+				selectionSortTunggakanDescending(daftarMhs, jumlahMhs)
 
 			default:
 				fmt.Println("\nPilihan tidak valid.")
@@ -48,10 +48,10 @@ func MenuDaftarMahasiswa(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *in
 	}
 }
 
-func selectionSortNamaAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+func insertionSortNamaAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var sorted [models.NMAX]models.Mahasiswa
-	var i, j int
-	var minIdx int
+	var pass, i, j int
+	var temp models.Mahasiswa
 	var sudahLunas bool
 	var totalTunggakan int
 	var sisa int
@@ -61,19 +61,21 @@ func selectionSortNamaAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 		sorted[i] = daftarMhs[i]
 	}
 
-	for i = 0; i < *jumlahMhs-1; i++ {
-		minIdx = i
+	pass = 1
+	for pass <= *jumlahMhs-1 {
+		i = pass
+		temp = sorted[pass]
 
-		for j = i + 1; j < *jumlahMhs; j++ {
-			if sorted[j].Nama < sorted[minIdx].Nama {
-				minIdx = j
-			}
+		for i > 0 && temp.Nama < sorted[i-1].Nama {
+			sorted[i] = sorted[i-1]
+			i--
 		}
 
-		sorted[i], sorted[minIdx] = sorted[minIdx], sorted[i]
+		sorted[i] = temp
+		pass++
 	}
 
-	fmt.Println("\nData Mahasiswa berdasarkan Nama Ascending menggunakan Selection Sort")
+	fmt.Println("\nData Mahasiswa berdasarkan Nama Ascending menggunakan Insertion Sort")
 	fmt.Println("--------------------------------------------------------------------------------")
 	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
 	fmt.Println("--------------------------------------------------------------------------------")
@@ -109,11 +111,10 @@ func selectionSortNamaAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 	fmt.Println("--------------------------------------------------------------------------------")
 }
 
-func insertionSortNamaDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+func selectionSortNamaDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
 	var sorted [models.NMAX]models.Mahasiswa
-	var kunci models.Mahasiswa
-	var i, j int
-	var lanjutGeser bool
+	var pass, idx, i, j int
+	var temp models.Mahasiswa
 	var sudahLunas bool
 	var totalTunggakan int
 	var sisa int
@@ -123,198 +124,203 @@ func insertionSortNamaDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumla
 		sorted[i] = daftarMhs[i]
 	}
 
-	for i = 1; i < *jumlahMhs; i++ {
-		kunci = sorted[i]
-		j = i - 1
+	pass = 1
+	for pass <= *jumlahMhs-1 {
+		idx = pass - 1
+		i = pass
+
+		for i < *jumlahMhs {
+			if sorted[idx].Nama < sorted[i].Nama {
+				idx = i
+			}
+			i++
+		}
+
+		temp = sorted[pass-1]
+		sorted[pass-1] = sorted[idx]
+		sorted[idx] = temp
+
+		pass++
+	}
+
+	fmt.Println("\nData Mahasiswa berdasarkan Nama Descending menggunakan Selection Sort")
+	fmt.Println("--------------------------------------------------------------------------------")
+	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
+	fmt.Println("--------------------------------------------------------------------------------")
+
+	for i = 0; i < *jumlahMhs; i++ {
+		sudahLunas = true
+		totalTunggakan = 0
+
+		for j = 0; j < 12; j++ {
+			if !sorted[i].Iuran[j].Status {
+				sudahLunas = false
+
+				sisa = models.TARGET_IURAN - sorted[i].Iuran[j].TotalTerbayar
+				if sisa > 0 {
+					totalTunggakan += sisa
+				}
+			}
+		}
+
+		status = "Lunas"
+		if !sudahLunas {
+			status = "Belum Lunas"
+		}
+
+		fmt.Printf("%-15s | %-25s | %-15s | Rp %-12d\n",
+			sorted[i].NIM,
+			sorted[i].Nama,
+			status,
+			totalTunggakan,
+		)
+	}
+
+	fmt.Println("--------------------------------------------------------------------------------")
+}
+
+func insertionSortTunggakanAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+	var sorted [models.NMAX]models.Mahasiswa
+	var pass, i, j, k int
+	var temp models.Mahasiswa
+	var lanjutGeser bool
+	var totalTemp, totalGeser, sisa int
+	var sudahLunas bool
+	var totalTunggakan int
+	var status string
+
+	for i = 0; i < *jumlahMhs; i++ {
+		sorted[i] = daftarMhs[i]
+	}
+
+	pass = 1
+	for pass <= *jumlahMhs-1 {
+		i = pass
+		temp = sorted[pass]
 		lanjutGeser = true
 
-		for j >= 0 && lanjutGeser {
-			if sorted[j].Nama < kunci.Nama {
-				sorted[j+1] = sorted[j]
-				j--
-			} else {
-				lanjutGeser = false
-			}
-		}
-
-		sorted[j+1] = kunci
-	}
-
-	fmt.Println("\nData Mahasiswa berdasarkan Nama Descending menggunakan Insertion Sort")
-	fmt.Println("--------------------------------------------------------------------------------")
-	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
-	fmt.Println("--------------------------------------------------------------------------------")
-
-	for i = 0; i < *jumlahMhs; i++ {
-		sudahLunas = true
-		totalTunggakan = 0
-
-		for j = 0; j < 12; j++ {
-			if !sorted[i].Iuran[j].Status {
-				sudahLunas = false
-
-				sisa = models.TARGET_IURAN - sorted[i].Iuran[j].TotalTerbayar
-				if sisa > 0 {
-					totalTunggakan += sisa
-				}
-			}
-		}
-
-		status = "Lunas"
-		if !sudahLunas {
-			status = "Belum Lunas"
-		}
-
-		fmt.Printf("%-15s | %-25s | %-15s | Rp %-12d\n",
-			sorted[i].NIM,
-			sorted[i].Nama,
-			status,
-			totalTunggakan,
-		)
-	}
-
-	fmt.Println("--------------------------------------------------------------------------------")
-}
-
-func selectionSortTunggakanAscending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
-	var sorted [models.NMAX]models.Mahasiswa
-	var i, j, k int
-	var minIdx int
-	var totalMin int
-	var totalJ int
-	var sudahLunas bool
-	var totalTunggakan int
-	var sisa int
-	var status string
-
-	for i = 0; i < *jumlahMhs; i++ {
-		sorted[i] = daftarMhs[i]
-	}
-
-	for i = 0; i < *jumlahMhs-1; i++ {
-		minIdx = i
-
-		for j = i + 1; j < *jumlahMhs; j++ {
-			totalMin = 0
-			totalJ = 0
-
-			for k = 0; k < 12; k++ {
-				if !sorted[minIdx].Iuran[k].Status {
-					sisa = models.TARGET_IURAN - sorted[minIdx].Iuran[k].TotalTerbayar
-					if sisa > 0 {
-						totalMin += sisa
-					}
-				}
-			}
-
-			for k = 0; k < 12; k++ {
-				if !sorted[j].Iuran[k].Status {
-					sisa = models.TARGET_IURAN - sorted[j].Iuran[k].TotalTerbayar
-					if sisa > 0 {
-						totalJ += sisa
-					}
-				}
-			}
-
-			if totalJ < totalMin {
-				minIdx = j
-			}
-		}
-
-		sorted[i], sorted[minIdx] = sorted[minIdx], sorted[i]
-	}
-
-	fmt.Println("\nData Mahasiswa berdasarkan Tunggakan Ascending menggunakan Selection Sort")
-	fmt.Println("--------------------------------------------------------------------------------")
-	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
-	fmt.Println("--------------------------------------------------------------------------------")
-
-	for i = 0; i < *jumlahMhs; i++ {
-		sudahLunas = true
-		totalTunggakan = 0
-
-		for j = 0; j < 12; j++ {
-			if !sorted[i].Iuran[j].Status {
-				sudahLunas = false
-
-				sisa = models.TARGET_IURAN - sorted[i].Iuran[j].TotalTerbayar
-				if sisa > 0 {
-					totalTunggakan += sisa
-				}
-			}
-		}
-
-		status = "Lunas"
-		if !sudahLunas {
-			status = "Belum Lunas"
-		}
-
-		fmt.Printf("%-15s | %-25s | %-15s | Rp %-12d\n",
-			sorted[i].NIM,
-			sorted[i].Nama,
-			status,
-			totalTunggakan,
-		)
-	}
-
-	fmt.Println("--------------------------------------------------------------------------------")
-}
-
-func insertionSortTunggakanDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
-	var sorted [models.NMAX]models.Mahasiswa
-	var kunci models.Mahasiswa
-	var i, j, k int
-	var lanjutGeser bool
-	var totalKunci int
-	var totalJ int
-	var sudahLunas bool
-	var totalTunggakan int
-	var sisa int
-	var status string
-
-	for i = 0; i < *jumlahMhs; i++ {
-		sorted[i] = daftarMhs[i]
-	}
-
-	for i = 1; i < *jumlahMhs; i++ {
-		kunci = sorted[i]
-		j = i - 1
-		lanjutGeser = true
-		totalKunci = 0
-
+		totalTemp = 0
 		for k = 0; k < 12; k++ {
-			if !kunci.Iuran[k].Status {
-				sisa = models.TARGET_IURAN - kunci.Iuran[k].TotalTerbayar
+			if !temp.Iuran[k].Status {
+				sisa = models.TARGET_IURAN - temp.Iuran[k].TotalTerbayar
 				if sisa > 0 {
-					totalKunci += sisa
+					totalTemp += sisa
 				}
 			}
 		}
 
-		for j >= 0 && lanjutGeser {
-			totalJ = 0
-
+		for i > 0 && lanjutGeser {
+			totalGeser = 0
 			for k = 0; k < 12; k++ {
-				if !sorted[j].Iuran[k].Status {
-					sisa = models.TARGET_IURAN - sorted[j].Iuran[k].TotalTerbayar
+				if !sorted[i-1].Iuran[k].Status {
+					sisa = models.TARGET_IURAN - sorted[i-1].Iuran[k].TotalTerbayar
 					if sisa > 0 {
-						totalJ += sisa
+						totalGeser += sisa
 					}
 				}
 			}
 
-			if totalJ < totalKunci {
-				sorted[j+1] = sorted[j]
-				j--
+			if totalTemp < totalGeser {
+				sorted[i] = sorted[i-1]
+				i--
 			} else {
 				lanjutGeser = false
 			}
 		}
 
-		sorted[j+1] = kunci
+		sorted[i] = temp
+		pass++
 	}
 
-	fmt.Println("\nData Mahasiswa berdasarkan Tunggakan Descending menggunakan Insertion Sort")
+	fmt.Println("\nData Mahasiswa berdasarkan Tunggakan Ascending menggunakan Insertion Sort")
+	fmt.Println("--------------------------------------------------------------------------------")
+	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
+	fmt.Println("--------------------------------------------------------------------------------")
+
+	for i = 0; i < *jumlahMhs; i++ {
+		sudahLunas = true
+		totalTunggakan = 0
+
+		for j = 0; j < 12; j++ {
+			if !sorted[i].Iuran[j].Status {
+				sudahLunas = false
+
+				sisa = models.TARGET_IURAN - sorted[i].Iuran[j].TotalTerbayar
+				if sisa > 0 {
+					totalTunggakan += sisa
+				}
+			}
+		}
+
+		status = "Lunas"
+		if !sudahLunas {
+			status = "Belum Lunas"
+		}
+
+		fmt.Printf("%-15s | %-25s | %-15s | Rp %-12d\n",
+			sorted[i].NIM,
+			sorted[i].Nama,
+			status,
+			totalTunggakan,
+		)
+	}
+
+	fmt.Println("--------------------------------------------------------------------------------")
+}
+
+func selectionSortTunggakanDescending(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int) {
+	var sorted [models.NMAX]models.Mahasiswa
+	var pass, idx, i, j, k int
+	var temp models.Mahasiswa
+	var totalIdx, totalI, sisa int
+	var sudahLunas bool
+	var totalTunggakan int
+	var status string
+
+	for i = 0; i < *jumlahMhs; i++ {
+		sorted[i] = daftarMhs[i]
+	}
+
+	pass = 1
+	for pass <= *jumlahMhs-1 {
+		idx = pass - 1
+		i = pass
+
+		for i < *jumlahMhs {
+			totalIdx = 0
+			for k = 0; k < 12; k++ {
+				if !sorted[idx].Iuran[k].Status {
+					sisa = models.TARGET_IURAN - sorted[idx].Iuran[k].TotalTerbayar
+					if sisa > 0 {
+						totalIdx += sisa
+					}
+				}
+			}
+
+			totalI = 0
+			for k = 0; k < 12; k++ {
+				if !sorted[i].Iuran[k].Status {
+					sisa = models.TARGET_IURAN - sorted[i].Iuran[k].TotalTerbayar
+					if sisa > 0 {
+						totalI += sisa
+					}
+				}
+			}
+
+			if totalIdx < totalI {
+				idx = i
+			}
+			i++
+		}
+
+		temp = sorted[pass-1]
+		sorted[pass-1] = sorted[idx]
+		sorted[idx] = temp
+
+		pass++
+	}
+
+	fmt.Println("\nData Mahasiswa berdasarkan Tunggakan Descending menggunakan Selection Sort")
 	fmt.Println("--------------------------------------------------------------------------------")
 	fmt.Printf("%-15s | %-25s | %-15s | %-15s\n", "NIM", "Nama", "Status", "Tunggakan")
 	fmt.Println("--------------------------------------------------------------------------------")

@@ -128,9 +128,9 @@ func sequentialSearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlah
 func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs *int, namaBulan [12]string) {
 	var nimCari string
 	var sorted [models.NMAX]models.Mahasiswa
+	var pass int
 	var i int
-	var j int
-	var minIdx int
+	var temp models.Mahasiswa
 	var kiri int
 	var kanan int
 	var tengah int
@@ -154,16 +154,18 @@ func binarySearchBelumBayar(daftarMhs *[models.NMAX]models.Mahasiswa, jumlahMhs 
 		sorted[i] = daftarMhs[i]
 	}
 
-	for i = 0; i < *jumlahMhs-1; i++ {
-		minIdx = i
+	pass = 1
+	for pass <= *jumlahMhs-1 {
+		i = pass
+		temp = sorted[pass]
 
-		for j = i + 1; j < *jumlahMhs; j++ {
-			if sorted[j].NIM < sorted[minIdx].NIM {
-				minIdx = j
-			}
+		for i > 0 && temp.NIM < sorted[i-1].NIM {
+			sorted[i] = sorted[i-1]
+			i--
 		}
 
-		sorted[i], sorted[minIdx] = sorted[minIdx], sorted[i]
+		sorted[i] = temp
+		pass++
 	}
 
 	kiri = 0
